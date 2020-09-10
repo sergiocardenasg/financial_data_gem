@@ -4,12 +4,14 @@ class FinancialData::CLI
     def call
         list_stocks
         menu
-        goodbye
     end
 
     def list_stocks
-        puts "What stock are you looking for?"
+        puts "What stock do you wanna add to your watchlist?"
         @stocks = FinancialData::Stock.today
+        @stocks.each.with_index(1) do |stock, i|
+            puts "#{i}. #{stock.name} (#{stock.ticker}) - #{stock.price}"
+        end
     end
 
     def menu
@@ -17,13 +19,13 @@ class FinancialData::CLI
         while input != 'exit'
             puts "Enter the number of stock you'd like more info on, type list to get stocks again, or type exit to quit:"
             input = gets.strip.downcase
-            case input
-            when "1"
-                puts "More info on Tesla"
-            when "2"
-                puts "More info on Mercado Libre"
-            when "list"
+            if input.to_i > 0
+                the_stock = @stocks[input.to_i - 1]
+                puts "#{i}. #{stock.ticker} - #{stock.price}"
+            elsif input == 'list'
                 list_stocks
+            elsif input == "exit"
+                goodbye
             else
                 puts "Invalid option"
             end
