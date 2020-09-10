@@ -2,10 +2,10 @@ class FinancialData::Stock
     attr_accessor :ticker, :ceo, :price, :volume, :open, :close
     
     def self.today
-        puts <<-DOC.gsub /^\s*/, ""
-            1.TSLA
-            2.MELI
-        DOC
+        # puts <<-DOC.gsub /^\s*/, ""
+        #     1.TSLA
+        #     2.MELI
+        # DOC
         stock_1 = self.new
         stock_1.ticker = "$TSLA"
         stock_1.ceo = "Elon Musk"
@@ -16,7 +16,7 @@ class FinancialData::Stock
 
         stock_2 = self.new
         stock_2.ticker = "$MELI"
-        stock_2.ceo = "Eduardo Gonzalez"
+        stock_2.ceo = "Eduardo"
         stock_2.price = "$1000"
         stock_2.volume = "500,000"
         stock_2.open = "$1100"
