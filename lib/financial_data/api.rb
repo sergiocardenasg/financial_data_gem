@@ -1,33 +1,45 @@
 require "httparty"
+require "date"
 
 class FinancialData::API
-    def self.get_stock(ticker)
+    def self.get_stock(ticker, dte)
 
         response = HTTParty.get("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=#{ticker}&apikey=204434fef8msh8e46af857668808p1a4a3djsne5de0d5a94fc")
 
-        JSON.parse(response.body)
+        d = Date.parse(dte) 
 
-        # ticker.symbol = response["Meta Data"]["2. Symbol"]
-        # ticker.date = response["Time Series (Daily)"]["#date"]
-        # ticker.open = response["Time Series (Daily)"]["#date"]["1. open"].to_f
-        # ticker.high = response["Time Series (Daily)"]["#date"]["2. high"].to_f
-        # ticker.low = response["Time Series (Daily)"]["#date"]["3. low"].to_f
-        # ticker.close = response["Time Series (Daily)"]["#date"]["4. close"].to_f
-        # ticker.volume = response["Time Series (Daily)"]["#date"]["5. volume"].to_i
+        if d.saturday?
+            d = d - 1
+        elsif d.sunday?
+            d = d - 2
+        elsif d.monday?
+            d = d - 3
+        else
+            d
+        end
 
-        #ticker.percentage_change = (((ticker.close(today) - ticker.open(yesterday))/ticker.open(yesterday).to_f)*100).round(2).to_s + "%"
-
-        # url = URI("https://alpha-vantage.p.rapidapi.com/query?outputsize=compact&datatype=json&function=TIME_SERIES_DAILY&symbol=#{symbol}")
-
-        # http = Net::HTTP.new(url.host, url.port)
-        # http.use_ssl = true
-        # http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-
-        # request = Net::HTTP::Get.new(url)
-        # request["x-rapidapi-host"] = 'alpha-vantage.p.rapidapi.com'
-        # request["x-rapidapi-key"] = '204434fef8msh8e46af857668808p1a4a3djsne5de0d5a94fc'
-
-        # response = http.request(request)
-        # return response.read_body
+        symbol = response["Meta Data"]["2. Symbol"]
+        date = response["Time Series (Daily)"][d.to_s]
+        close = date["4. close"].to_f
+        yesterday_close = response["Time Series (Daily)"][d.prev_day.to_s]["4. close"].to_f
+        volume = date["5. volume"].to_i
+        percent_change = (((close - yesterday_close)/yesterday_close.to_f)*100).round(2).to_s + "%"
+        
+        attributes = {:symbol => symbol, :close => close, :volume => volume, :percent_change => percent_change} 
+        
+        stock = FinancialData::Stock.new
+        stock.attrs_from_hash(attributes)
+        stock
+        #JSON.parse(response.body)
     end
+#     symbol = response["Meta Data"]["2. Symbol"]
+#     date = response["Time Series (Daily)"][d.to_s]
+#     opn = date["1. open"].to_f
+#     high = date["2. high"].to_f
+#     low = date["3. low"].to_f
+#     close = date["4. close"].to_f
+#     yesterday_close = response["Time Series (Daily)"][d.prev_day.to_s]["4. close"].to_f
+#     volume = date["5. volume"].to_i
+#     percent_change = (((close - yesterday_close)/yesterday_close.to_f)*100).round(2).to_s + "%"
+#     return symbol, opn, high, low, close, volume, yesterday_close, percent_change
 end

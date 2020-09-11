@@ -1,17 +1,28 @@
 # Our CLI Controller
 class FinancialData::CLI
 
+    @@all = []
+    
     def call
         list_stocks
         menu
     end
 
     def list_stocks
-        puts "What stock do you wanna add to your watchlist?"
-        @stocks = FinancialData::Stock.today
-        @stocks.each.with_index(1) do |stock, i|
-            puts "#{i}. #{stock.name} (#{stock.ticker}) - #{stock.price}"
-        end
+        puts "Hello! Please enter the ticker you want info on:"
+        ticker = gets.strip
+        #indices = FinancialData::Stock.indices
+        puts "Please enter the date you wish to get #{ticker}'s info on YYYY-MM-DD format:"
+        date = gets.strip
+        equity = FinancialData::API.get_stock(ticker, date)
+        puts "On #{date}, #{ticker} closed at #{equity.close} (#{equity.percent_change})."
+        puts "These were indices as of close on the day you picked:"
+        indices = FinancialData::Stock.indices(date)
+        puts <<-DOC
+        S&P 500: #{indices[0].percent_change} 
+        DJIA: #{indices[1].percent_change} 
+        NASDAQ: #{indices[2].percent_change} 
+        DOC
     end
 
     def menu
@@ -30,6 +41,10 @@ class FinancialData::CLI
                 puts "Invalid option"
             end
         end
+    end
+
+    def add_to_watchlist
+        @@all << self
     end
 
     def goodbye
