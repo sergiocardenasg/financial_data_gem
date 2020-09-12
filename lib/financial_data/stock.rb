@@ -1,10 +1,6 @@
 class FinancialData::Stock
     attr_accessor :d, :symbol, :date, :opn, :high, :low, :close, :yesterday_close, :volume, :percent_change
 
-    # def self.today
-    #     self.scrape_screener
-    # end
-
     # def self.add_to_watchlist
     #     stocks = []
     #     stocks << self.scrape_screener
