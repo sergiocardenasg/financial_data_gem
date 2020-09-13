@@ -20,26 +20,19 @@ class FinancialData::API
 
         symbol = response["Meta Data"]["2. Symbol"]
         date = response["Time Series (Daily)"][d.to_s]
+        opn = date["1. open"].to_f
+        high = date["2. high"].to_f
+        volume = date["5. volume"].to_i
         close = date["4. close"].to_f
         yesterday_close = response["Time Series (Daily)"][d.prev_day.to_s]["4. close"].to_f
         volume = date["5. volume"].to_i
         percent_change = (((close - yesterday_close)/yesterday_close.to_f)*100).round(2).to_s + "%"
         
-        attributes = {:symbol => symbol, :close => close, :volume => volume, :percent_change => percent_change} 
+        attributes = {:symbol => symbol, :date => date, :opn => opn, :high => high, :close => close, :volume => volume, :percent_change => percent_change} 
         
         stock = FinancialData::Stock.new
         stock.attrs_from_hash(attributes)
         stock
-        #JSON.parse(response.body)
     end
-#     symbol = response["Meta Data"]["2. Symbol"]
-#     date = response["Time Series (Daily)"][d.to_s]
-#     opn = date["1. open"].to_f
-#     high = date["2. high"].to_f
-#     low = date["3. low"].to_f
-#     close = date["4. close"].to_f
-#     yesterday_close = response["Time Series (Daily)"][d.prev_day.to_s]["4. close"].to_f
-#     volume = date["5. volume"].to_i
-#     percent_change = (((close - yesterday_close)/yesterday_close.to_f)*100).round(2).to_s + "%"
-#     return symbol, opn, high, low, close, volume, yesterday_close, percent_change
+
 end
