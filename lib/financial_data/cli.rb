@@ -15,16 +15,24 @@ class FinancialData::CLI
 
     def list_stocks
         puts "Hello! Please enter the ticker you want info on:"
-        ticker = gets.strip            
+        ticker = gets.strip
+        # while ticker.include?(/\d/)
+        #     puts "Please enter a valid ticker."
+        #     # puts "Please enter the date you wish to get #{ticker}'s info on YYYY-MM-DD format:"
+        #     list_stocks
+        # end           
         puts "Please enter the date you wish to get #{ticker}'s info on YYYY-MM-DD format:"
         date = gets.strip
-        # is_future = Date.parse(date) 
+        is_future = Date.parse(date) 
         # while is_future > Date.today
-        #     puts "You selected a date in the future. Please select a valid date."
+        #     puts "You selected a date in the future. Please re-enter the ticker and select a valid date."
         #     puts "Please enter the date you wish to get #{ticker}'s info on YYYY-MM-DD format:"
-        #     break
+        #     list_stocks
         # end
-        duplicate_check(ticker)
+        # if @@stocks.include?(ticker)
+        #     puts "The stock is already in your watchlist. Please input another."
+        #     list_stocks
+        # end
         equity = FinancialData::API.get_stock(ticker, date)
         puts "On #{date}, #{ticker} closed at #{equity.close} (#{equity.percent_change})."
         add_to_watchlist(equity)
@@ -96,13 +104,6 @@ class FinancialData::CLI
 
     def delete_from_watchlist(equity)
         @@stocks.delete(equity)
-    end
-
-    def duplicate_check(ticker)
-        if @@stocks.include?(ticker)
-            puts "The stock is already in your watchlist. Please input another."
-            list_stocks
-        end
     end
 
     def goodbye
