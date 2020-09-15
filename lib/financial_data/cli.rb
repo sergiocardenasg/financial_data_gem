@@ -2,12 +2,12 @@
 class FinancialData::CLI
 
     @@stocks = []
-    
+    # calls get_stock and menu functions
     def call
         get_stock_info
         menu
     end
-
+    # asks users for the stock and date they'd like to get data on
     def get_stock_info
         while true
             puts "Hello! Please enter the ticker you want info on:"
@@ -29,11 +29,16 @@ class FinancialData::CLI
             end
         end
         equity = FinancialData::API.get_stock(ticker, date)
-        puts "On #{date}, #{ticker} closed at #{equity.close} (#{equity.percent_change})."
-        add_to_watchlist(equity)
-        market_close(date)
+        if !equity
+            puts "Ticker symbol does not exist. Please input another"
+            get_stock_info
+        else
+            puts "On #{date}, #{ticker} closed at #{equity.close} (#{equity.percent_change})."
+            add_to_watchlist(equity)
+            market_close(date)
+        end
     end
-
+    # presents user with the choice of choosing where the markets closed as of the day they selected
     def market_close(date)
         puts "Would you like to see where the markets closed on this day? (Y/N)"
         indeces_close = gets.strip
@@ -47,7 +52,7 @@ class FinancialData::CLI
             DOC
         end
     end
-
+    # lets user pick to 1) see their watchlist, 2) get a new stock info, or 3) quit the application
     def menu
         input = nil
         while input != 'exit'
@@ -76,16 +81,16 @@ class FinancialData::CLI
             end
         end
     end
-
+    # prints watchlist with each with index
     def print_watchlist
         if @@stocks.length == 0
             puts "Your watchlist is empty."
         else
             puts "Here's your watchlist:"
-            @@stocks.each_with_index{|stock, index| puts "#{index + 1} - #{stock.symbol}"}
+            @@stocks.each_with_index{|stock, index| puts "#{index + 1} - #{stock.symbol}: #{stock.percent_change}"}
         end
     end
-
+    # adds stock to watchlist, or lets user know if stock is already in their watchlist
     def add_to_watchlist(equity)
         puts "Would you like to add this stock to your watchlist? (Y/N)"
         watchlist_add = gets.strip
@@ -100,11 +105,11 @@ class FinancialData::CLI
             puts "#{equity.symbol} was not added to your watchlist."
         end
     end
-
+    # deletes stock from watchlist
     def delete_from_watchlist(equity)
         @@stocks.delete(equity)
     end
-
+    # quits the application
     def goodbye
         puts "See you later!"
     end
