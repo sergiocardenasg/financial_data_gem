@@ -28,7 +28,7 @@ class FinancialData::API
         volume = date["5. volume"].to_i
         percent_change = (((close - yesterday_close)/yesterday_close.to_f)*100).round(2).to_s + "%"
         
-        attributes = {:symbol => symbol, :date => date, :opn => opn, :high => high, :close => close, :volume => volume, :percent_change => percent_change} 
+        attributes = {:symbol => symbol, :d => d, :date => date, :opn => opn, :high => high, :close => close, :volume => volume, :percent_change => percent_change} 
         
         stock = FinancialData::Stock.new
         stock.attrs_from_hash(attributes)

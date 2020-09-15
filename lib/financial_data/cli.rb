@@ -4,11 +4,11 @@ class FinancialData::CLI
     @@stocks = []
     
     def call
-        list_stocks
+        get_stock_info
         menu
     end
 
-    def list_stocks
+    def get_stock_info
         while true
             puts "Hello! Please enter the ticker you want info on:"
             ticker = gets.strip
@@ -30,7 +30,7 @@ class FinancialData::CLI
         end
         equity = FinancialData::API.get_stock(ticker, date)
         puts "On #{date}, #{ticker} closed at #{equity.close} (#{equity.percent_change})."
-        add_to_watchlist(equity) unless @@stocks.include?(equity.symbol)
+        add_to_watchlist(equity)
         market_close(date)
     end
 
@@ -51,15 +51,15 @@ class FinancialData::CLI
     def menu
         input = nil
         while input != 'exit'
-            puts "Type 'watchlist' to see you watchlist, type 'new stock' to get another stock's info, or type exit to quit:"
+            puts "Type 'list' to see you watchlist, type 'new' to get another stock's info, or type exit to quit:"
             input = gets.strip.downcase
-            if input == 'watchlist' && @@stocks.length != 0
+            if input == 'list' && @@stocks.length != 0
                 print_watchlist
                 puts "Enter the number of the stock in your watchlist you'd like more info on:"
                 get_info = gets.strip
                 if get_info.to_i > 0
                     the_stock = @@stocks[get_info.to_i-1]
-                    puts "On this day, #{the_stock.symbol} opened at $#{the_stock.opn}, had an intraday high of $#{the_stock.high}, and closed at $#{the_stock.close} (#{the_stock.percent_change})."
+                    puts "On #{the_stock.d}, #{the_stock.symbol} opened at $#{the_stock.opn}, had an intraday high of $#{the_stock.high}, and closed at $#{the_stock.close} (#{the_stock.percent_change})."
                     puts "Would you like to remove this stock from your watchlist? (Y/N)"
                     rmv = gets.strip
                     if rmv == "Y" || rmv == "y"
@@ -67,8 +67,8 @@ class FinancialData::CLI
                         puts "#{the_stock.symbol} has been removed from your watchlist."
                     end
                 end
-            elsif input == 'new stock'
-                list_stocks
+            elsif input == 'new'
+                get_stock_info
             elsif input == "exit"
                 goodbye
             else
