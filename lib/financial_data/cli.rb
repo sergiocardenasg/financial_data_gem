@@ -8,34 +8,29 @@ class FinancialData::CLI
         menu
     end
 
-    # def date_of
-    #     puts "Please enter the date you wish to get financial data on YYYY-MM-DD format:"
-    #     date = gets.strip
-    # end
-
     def list_stocks
-        puts "Hello! Please enter the ticker you want info on:"
-        ticker = gets.strip
-        # while ticker.include?(/\d/)
-        #     puts "Please enter a valid ticker."
-        #     # puts "Please enter the date you wish to get #{ticker}'s info on YYYY-MM-DD format:"
-        #     list_stocks
-        # end           
-        puts "Please enter the date you wish to get #{ticker}'s info on YYYY-MM-DD format:"
-        date = gets.strip
-        is_future = Date.parse(date) 
-        # while is_future > Date.today
-        #     puts "You selected a date in the future. Please re-enter the ticker and select a valid date."
-        #     puts "Please enter the date you wish to get #{ticker}'s info on YYYY-MM-DD format:"
-        #     list_stocks
-        # end
-        # if @@stocks.include?(ticker)
-        #     puts "The stock is already in your watchlist. Please input another."
-        #     list_stocks
-        # end
+        while true
+            puts "Hello! Please enter the ticker you want info on:"
+            ticker = gets.strip
+            if ticker =~ /\d/
+                puts "Please enter valid ticker symbol."
+            else
+                break
+            end
+        end           
+        while true
+            puts "Please enter the date you wish to get #{ticker}'s info on YYYY-MM-DD format:"
+            date = gets.strip
+            is_future = Date.parse(date) 
+            if is_future > Date.today
+                puts "You selected a date in the future. Please re-enter the ticker and select a valid date."
+            else
+                break
+            end
+        end
         equity = FinancialData::API.get_stock(ticker, date)
         puts "On #{date}, #{ticker} closed at #{equity.close} (#{equity.percent_change})."
-        add_to_watchlist(equity)
+        add_to_watchlist(equity) unless @@stocks.include?(equity.symbol)
         market_close(date)
     end
 
@@ -95,8 +90,12 @@ class FinancialData::CLI
         puts "Would you like to add this stock to your watchlist? (Y/N)"
         watchlist_add = gets.strip
         if watchlist_add == "Y" || watchlist_add == "y"
-            @@stocks << equity
-            puts "#{equity.symbol} was added to your watchlist."
+            if @@stocks.detect{|stock|(stock.symbol)}
+                puts "#{equity.symbol} is already in your watchlist."
+            else
+                @@stocks << equity
+                puts "#{equity.symbol} was added to your watchlist."
+            end
         else
             puts "#{equity.symbol} was not added to your watchlist."
         end
