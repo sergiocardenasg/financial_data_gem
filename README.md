@@ -1,6 +1,10 @@
 # FinancialData
 
-Get stocks, crypcurrencies, and FX data!
+Get data on global equities (open, high, low, close, volume, and percent change) with this easy-to-use Ruby gem, covering 20+ years of historical data. 
+
+An optional market snapshot on the date of your selection is available, too!
+
+Create your own watchlist as well with as many stocks as you'd like!
 
 ## Installation
 
@@ -20,7 +24,14 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here.
+After installing the gem, the console will ask you to enter a ticker symbol (which is validated), and a date (which is also validated). The program will return the closing price and delta for the stock on the day you chose, and ask if you'd like to add that stock to a watchlist. After, you'll get the option to see where the markets closed on that date.
+
+You'll then be routed to the menu, where you can:
+1) Get info and add a new stock to your watchlist,
+2) See your watchlist and its components with the option to get more data or remove from watchlist, or
+3) Exit the program.
+
+The watchlist will erased every time the program is closed.
 
 ## Development
 

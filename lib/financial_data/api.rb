@@ -4,7 +4,7 @@ require "date"
 class FinancialData::API
     def self.get_stock(ticker, dte)
 
-        response = HTTParty.get("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=#{ticker}&apikey=204434fef8msh8e46af857668808p1a4a3djsne5de0d5a94fc")
+        response = HTTParty.get("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=#{ticker}&outputsize=full&apikey=204434fef8msh8e46af857668808p1a4a3djsne5de0d5a94fc")
 
         if response["Error Message"]
             return false
