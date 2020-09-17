@@ -33,7 +33,7 @@ class FinancialData::CLI
             puts "Ticker symbol does not exist. Please input another"
             get_stock_info
         else
-            puts "On #{date}, #{ticker} closed at #{equity.close} (#{equity.percent_change})."
+            puts "On #{date}, #{ticker} closed at $#{equity.close} (#{equity.percent_change})."
             add_to_watchlist(equity)
             market_close(date)
         end
