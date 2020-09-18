@@ -19,7 +19,7 @@ class FinancialData::CLI
             end
         end           
         while true
-            puts "Please enter the date you wish to get #{ticker}'s info on YYYY-MM-DD format:"
+            puts "Please enter the date you wish to get #{ticker}'s info on:"
             date = gets.strip
             is_future = Date.parse(date) 
             if is_future > Date.today
@@ -95,7 +95,7 @@ class FinancialData::CLI
         puts "Would you like to add this stock to your watchlist? (Y/N)"
         watchlist_add = gets.strip
         if watchlist_add == "Y" || watchlist_add == "y"
-            if @@stocks.detect{|stock|(stock.symbol)}
+            if @@stocks.detect{|stock|(stock.symbol == equity.symbol)}
                 puts "#{equity.symbol} is already in your watchlist."
             else
                 @@stocks << equity
