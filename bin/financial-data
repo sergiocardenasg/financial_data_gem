@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
-# testing
+# ^ shabang - help computer know what type of file to run
 require "bundler/setup"
-require "financial_data"
+require_relative "../lib/financial_data"
 
 FinancialData::CLI.new.call

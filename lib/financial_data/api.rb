@@ -34,8 +34,6 @@ class FinancialData::API
         
         attributes = {:symbol => symbol, :d => d,:date => date, :opn => opn, :high => high, :close => close, :volume => volume, :percent_change => percent_change} 
         
-        stock = FinancialData::Stock.new
-        stock.attrs_from_hash(attributes)
-        stock
+        stock = FinancialData::Stock.new(attributes)
     end
 end

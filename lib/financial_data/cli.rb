@@ -14,20 +14,28 @@ class FinancialData::CLI
             ticker = gets.strip
             if ticker =~ /\d/
                 puts "Please enter valid ticker symbol."
+                #get_stock_info
             else
-                break
+                puts "Please enter the date you wish to get #{ticker}'s info on:"
+                date = gets.strip
+                is_future = Date.parse(date) 
+                if is_future > Date.today
+                    puts "You selected a date in the future. Please re-enter the ticker and select a valid date."
+                else
+                    break
+                end
             end
         end           
-        while true
-            puts "Please enter the date you wish to get #{ticker}'s info on:"
-            date = gets.strip
-            is_future = Date.parse(date) 
-            if is_future > Date.today
-                puts "You selected a date in the future. Please re-enter the ticker and select a valid date."
-            else
-                break
-            end
-        end
+        # while true
+        #     puts "Please enter the date you wish to get #{ticker}'s info on:"
+        #     date = gets.strip
+        #     is_future = Date.parse(date) 
+        #     if is_future > Date.today
+        #         puts "You selected a date in the future. Please re-enter the ticker and select a valid date."
+        #     else
+        #         break
+        #     end
+        # end
         equity = FinancialData::API.get_stock(ticker, date)
         if !equity
             puts "Ticker symbol does not exist. Please input another"
@@ -41,8 +49,8 @@ class FinancialData::CLI
     # presents user with the choice of choosing where the markets closed as of the day they selected
     def market_close(date)
         puts "Would you like to see where the markets closed on this day? (Y/N)"
-        indeces_close = gets.strip
-        if indeces_close == "Y" || indeces_close == "y"
+        indeces_close = gets.strip.downcase
+        if indeces_close == "y"
             puts "These were indices as of #{date}:"
             indices = FinancialData::Stock.indices(date)
             puts <<-DOC
@@ -56,7 +64,7 @@ class FinancialData::CLI
     def menu
         input = nil
         while input != 'exit'
-            puts "Type 'list' to see you watchlist, type 'new' to get another stock's info, or type exit to quit:"
+            puts "Type 'list' to see you watchlist, type 'new' to get another stock's info, or type 'exit' to quit:"
             input = gets.strip.downcase
             if input == 'list' && @@stocks.length != 0
                 print_watchlist
@@ -66,8 +74,8 @@ class FinancialData::CLI
                     the_stock = @@stocks[get_info.to_i-1]
                     puts "On #{the_stock.d}, #{the_stock.symbol} opened at $#{the_stock.opn}, had an intraday high of $#{the_stock.high}, and closed at $#{the_stock.close} (#{the_stock.percent_change})."
                     puts "Would you like to remove this stock from your watchlist? (Y/N)"
-                    rmv = gets.strip
-                    if rmv == "Y" || rmv == "y"
+                    rmv = gets.strip.downcase
+                    if rmv == "y"
                         delete_from_watchlist(the_stock)
                         puts "#{the_stock.symbol} has been removed from your watchlist."
                     end

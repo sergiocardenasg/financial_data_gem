@@ -1,7 +1,7 @@
 class FinancialData::Stock
     attr_accessor :d, :symbol, :date, :opn, :high, :low, :close, :yesterday_close, :volume, :percent_change
 
-    def attrs_from_hash(attrs)
+    def initialize(attrs)
         attrs.each do |k, v|
             send("#{k}=", v)
         end
